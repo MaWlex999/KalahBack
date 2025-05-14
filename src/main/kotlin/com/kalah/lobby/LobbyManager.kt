@@ -1,12 +1,5 @@
 package com.kalah.lobby
 
-import io.ktor.server.routing.*
-import io.ktor.server.application.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
-import kotlinx.serialization.Serializable
-import java.util.concurrent.ConcurrentHashMap
-import java.util.UUID
 import com.kalah.dto.LobbyDTO
 import com.kalah.dto.UserDTO
 import java.util.concurrent.atomic.AtomicInteger
@@ -48,45 +41,4 @@ object LobbyManager {
     }
 
     fun getById(lobbyId: Int): LobbyDTO? = lobbies.find { it.id == lobbyId }
-}
-
-@Serializable
-data class Lobby(
-    val id: String,
-    val hostName: String,
-    var guestName: String? = null,
-    var isReady: Boolean = false
-)
-
-@Serializable
-data class CreateLobbyRequest(val hostName: String)
-@Serializable
-data class JoinLobbyRequest(val lobbyId: String, val guestName: String)
-
-fun Route.lobbyRoutes() {
-    route("/lobby") {
-        post("/create") {
-            val req = call.receive<CreateLobbyRequest>()
-            val lobby = LobbyManager.create(req.hostName, UserDTO(0, ""), 2)
-            call.respond(lobby)
-        }
-        post("/join") {
-            val req = call.receive<JoinLobbyRequest>()
-            val lobby = LobbyManager.join(req.lobbyId.toInt(), UserDTO(0, req.guestName))
-            if (lobby != null) {
-                call.respond(lobby)
-            } else {
-                call.respondText("Лобби не найдено или уже заполнено", status = io.ktor.http.HttpStatusCode.BadRequest)
-            }
-        }
-        get("/{id}") {
-            val id = call.parameters["id"] ?: return@get call.respondText("Нет id", status = io.ktor.http.HttpStatusCode.BadRequest)
-            val lobby = LobbyManager.getById(id.toInt())
-            if (lobby != null) {
-                call.respond(lobby)
-            } else {
-                call.respondText("Лобби не найдено", status = io.ktor.http.HttpStatusCode.NotFound)
-            }
-        }
-    }
 } 

@@ -16,7 +16,6 @@ fun Route.websocketRoutes() {
         while (true) {
             val lobby = LobbyManager.getById(lobbyId) ?: break
             outgoing.send(Frame.Text(Json.encodeToString(lobby)))
-            // Можно добавить задержку или реакцию на события
             kotlinx.coroutines.delay(2000)
         }
     }
@@ -25,7 +24,6 @@ fun Route.websocketRoutes() {
         while (true) {
             val state = GameManager.getGame(lobbyId) ?: break
             outgoing.send(Frame.Text(Json.encodeToString(state)))
-            // Можно добавить задержку или реакцию на события
             kotlinx.coroutines.delay(1000)
         }
     }
