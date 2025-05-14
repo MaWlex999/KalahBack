@@ -19,6 +19,7 @@ import io.ktor.server.auth.jwt.*
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.kalah.game.websocketRoutes
+import com.kalah.ktorCompatibleRoutes
 
 
 fun main() {
@@ -49,5 +50,6 @@ fun Application.module() {
         lobbyRoutes()
         gameRoutes()
         websocketRoutes()
+        ktorCompatibleRoutes()
     }
 } 
