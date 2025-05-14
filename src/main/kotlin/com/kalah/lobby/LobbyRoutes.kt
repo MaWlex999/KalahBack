@@ -8,7 +8,12 @@ import com.kalah.dto.LobbyDTO
 import com.kalah.dto.UserDTO
 
 @kotlinx.serialization.Serializable
-data class CreateLobbyRequest(val name: String, val owner: UserDTO, val maxPlayers: Int = 2)
+data class CreateLobbyRequest(
+    val name: String,
+    val initialStones: Int,
+    val initialHoles: Int,
+    val creator: UserDTO
+)
 
 @kotlinx.serialization.Serializable
 data class JoinLobbyRequest(val lobbyId: Int, val user: UserDTO)
@@ -20,7 +25,7 @@ fun Route.lobbyRoutes() {
         }
         post("/create") {
             val req = call.receive<CreateLobbyRequest>()
-            val lobby = LobbyManager.create(req.name, req.owner, req.maxPlayers)
+            val lobby = LobbyManager.create(req.name, req.initialStones, req.initialHoles, req.creator)
             call.respond(lobby)
         }
         post("/{lobbyId}/join") {

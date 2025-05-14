@@ -10,14 +10,14 @@ object LobbyManager {
 
     fun getAll(): List<LobbyDTO> = lobbies.toList()
 
-    fun create(name: String, owner: UserDTO, maxPlayers: Int = 2): LobbyDTO {
+    fun create(name: String, initialStones: Int, initialHoles: Int, creator: UserDTO): LobbyDTO {
         val lobby = LobbyDTO(
             id = idCounter.getAndIncrement(),
             name = name,
-            players = listOf(owner),
-            maxPlayers = maxPlayers,
-            ownerId = owner.id,
-            status = "waiting"
+            initialStones = initialStones,
+            initialHoles = initialHoles,
+            creator = creator,
+            guest = null
         )
         lobbies.add(lobby)
         return lobby
@@ -27,17 +27,10 @@ object LobbyManager {
         val idx = lobbies.indexOfFirst { it.id == lobbyId }
         if (idx == -1) return null
         val lobby = lobbies[idx]
-        if (lobby.players.any { it.id == user.id } || lobby.players.size >= lobby.maxPlayers) return null
-        val updated = lobby.copy(players = lobby.players + user)
+        if (lobby.guest != null) return null
+        val updated = lobby.copy(guest = user)
         lobbies[idx] = updated
         return updated
-    }
-
-    fun updateStatus(lobbyId: Int, status: String) {
-        val idx = lobbies.indexOfFirst { it.id == lobbyId }
-        if (idx != -1) {
-            lobbies[idx] = lobbies[idx].copy(status = status)
-        }
     }
 
     fun getById(lobbyId: Int): LobbyDTO? = lobbies.find { it.id == lobbyId }

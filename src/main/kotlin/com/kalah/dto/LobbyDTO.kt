@@ -7,8 +7,8 @@ import com.kalah.dto.UserDTO
 data class LobbyDTO(
     val id: Int,
     val name: String,
-    val players: List<UserDTO>,
-    val maxPlayers: Int,
-    val ownerId: Int,
-    val status: String
+    val initialStones: Int,
+    val initialHoles: Int,
+    val creator: UserDTO,
+    val guest: UserDTO?
 ) 
